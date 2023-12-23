@@ -18,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat;
 public class GameView extends View {
     private int viewWidth, viewHeight;
     private double points;
+    private int speed=70;
     private DinoSprite Dino;
     private Bitmap background_bitmap,tree_bitmap,dino_bitmap;
     private int background_x = 0;
@@ -28,6 +29,7 @@ public class GameView extends View {
 
     public GameView(Context context) {
         super(context);
+        //утсановка шрифта
         Typeface tf= ResourcesCompat.getFont(getContext(),R.font.pixel_font);
         paint.setTextSize(120);
         paint.setColor(Color.parseColor("#666666"));
@@ -57,8 +59,9 @@ public class GameView extends View {
         Dino=new DinoSprite(dino_bitmap,40,viewHeight - viewHeight / 3-viewHeight/5,firstFrame);
         for(int i=0;i<6;i++){Dino.addFrame(new Rect(i*dino_w,0,i*dino_w+dino_w,dino_bitmap.getHeight()));}
 
+
         for(int i=0;i<2;i++){
-            trees[i]=new ChristmasTreeSprite(tree_bitmap,random.nextInt(viewWidth/2)+viewWidth*(2+(i)),viewHeight - viewHeight / 3-viewHeight/5,timerInterval,viewWidth);
+            trees[i]=new ChristmasTreeSprite(tree_bitmap,random.nextInt(viewWidth/2)+viewWidth*(2+(i)),viewHeight - viewHeight / 3-viewHeight/5,this.speed,viewWidth);
         }
 
 
@@ -76,26 +79,33 @@ public class GameView extends View {
         Random random = new Random();
 
         for(int i=0;i<2;i++){
-                if (!(trees[i].isActive()))trees[i]=new ChristmasTreeSprite(tree_bitmap,random.nextInt(viewWidth/2)+viewWidth*(2+(i)),viewHeight - viewHeight / 3-viewHeight/5,timerInterval,viewWidth);
+                if (!(trees[i].isActive()))trees[i]=new ChristmasTreeSprite(tree_bitmap,random.nextInt(viewWidth/2)+viewWidth*(2+(i)),viewHeight - viewHeight / 3-viewHeight/5,this.speed,viewWidth);
                 else{trees[i].draw(canvas);Log.d("DRAW", "its must be draw");}
         }
         Dino.draw(canvas);
     }
 
     protected void update() {
-        points+=0.2;
-
-        background_x = (background_x + timerInterval) % ( viewWidth+50);
+        for(ChristmasTreeSprite tree:trees){
+            Dino.intersect(tree);
+            Log.d("RECT",Dino.getBoundingBoxRect()+" " + tree.getBoundingBoxRect()+"");
+        }
+        if (!Dino.isAlive()){this.speed=0;}
+        else points+=0.2;
+        //проверка на то, что дино живой
+        if (Dino.isAlive()){
+        background_x = (background_x + this.speed) % ( viewWidth+50);
         for(ChristmasTreeSprite tree:trees){
             tree.update();
 
-        }
+        }}
         Dino.update(timerInterval);
 
         invalidate();
         Log.d("LEN", viewHeight + " " + viewWidth);
 
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event){
         int eventAction=event.getAction();

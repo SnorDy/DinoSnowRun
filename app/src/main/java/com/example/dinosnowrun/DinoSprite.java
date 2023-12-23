@@ -23,20 +23,24 @@ public class DinoSprite {
     private int currentFrame;
     private double timeForCurrentFrame;
     private double frameTime;
-    private int jump_speed;
+    private Rect EndFrame;
+    private int jump_speed,down_speed;
     private Paint p = new Paint();
 
     public DinoSprite(Bitmap b, int x, int y, Rect initialFrame){
         this.bitmap=b;
         this.x=x;
         this.jump_speed=60;
+        y=y-20;
+        this.down_speed = jump_speed-10;
         this.y=y-(y%jump_speed);
         this.start_y=this.y;
 
-        this.jump_y=y/4-(y/4%jump_speed);
+        this.jump_y=y/4-(y/4%jump_speed)-jump_speed;
 
         this.frames = new ArrayList<Rect>();
         this.frames.add(initialFrame);
+
         this.timeForCurrentFrame = 0.0;
         this.frameTime = 12;
         this.currentFrame = 0;
@@ -80,6 +84,14 @@ public class DinoSprite {
         return this.y;
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
     public void setY(int y) {
         this.y = y;
     }
@@ -108,8 +120,11 @@ public class DinoSprite {
         frames.add(frame);
     }
 
+
     public void update(int ms){
         timeForCurrentFrame += ms+100;
+        if (!isAlive()){currentFrame=frames.size()-1;}
+
         //реализация прыжка
         if ((IsUp())&&(this.y!=this.jump_y))this.y-=jump_speed;
         else {SetDown(true);SetUp(false);}
@@ -117,12 +132,21 @@ public class DinoSprite {
         else {SetDown(false);Log.d("JUMP"," y "+y+"start y"+ start_y+" "+Integer.toString(262-262%40));}
 
 
-        if (timeForCurrentFrame >= frameTime) {
+        if (timeForCurrentFrame >= frameTime&&isAlive()) {
             currentFrame = (currentFrame + 1) % (frames.size()-2);
             timeForCurrentFrame = timeForCurrentFrame - frameTime;
         }
 
 
+    }
+    public boolean intersect(ChristmasTreeSprite s){
+
+        if (getBoundingBoxRect().intersect(s.getBoundingBoxRect())) {setAlive(false); return true;}
+
+        return false;
+    }
+    public Rect getBoundingBoxRect(){
+        return new Rect(this.x,this.y,this.x+bitmap.getWidth(),this.y+bitmap.getHeight());
     }
     public void draw (Canvas canvas) {
 

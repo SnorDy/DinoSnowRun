@@ -3,6 +3,7 @@ package com.example.dinosnowrun;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
 
@@ -38,10 +39,14 @@ public class ChristmasTreeSprite {
     }
 
     public void update() {
+
         x -= Vx;
         if (x<-200){x= viewWidth+bitmap.getWidth();this.isActive=false;
             Log.d("UPDATE","Its update");}
 
+    }
+    public Rect getBoundingBoxRect(){
+        return new Rect(this.x,this.y,this.x+bitmap.getWidth(),this.y+bitmap.getHeight());
     }
 
     public void draw(Canvas canvas) {
