@@ -45,8 +45,9 @@ public class GameView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         viewWidth = w;
         viewHeight = h;
-
+        //создание генератора рнадом для генерации координат елок
         Random random = new Random();
+        //получение изображений заднего фона, елок и дино
         background_bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
                 R.drawable.background2), viewWidth +50, viewHeight - viewHeight / 3, false);
         tree_bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
@@ -54,11 +55,11 @@ public class GameView extends View {
 
         dino_bitmap=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
                 R.drawable.dino), viewWidth/2+viewWidth/42, viewHeight/3, false);
-        int dino_w =dino_bitmap.getWidth()/6;
-        Rect firstFrame = new Rect(0,0,dino_w,dino_bitmap.getHeight());
+        int dino_w =dino_bitmap.getWidth()/6;//деление одной картнки на кадры
+        Rect firstFrame = new Rect(0,0,dino_w,dino_bitmap.getHeight());//первый кадр с началом в 0 0
         Dino=new DinoSprite(dino_bitmap,40,viewHeight - viewHeight / 3-viewHeight/5,firstFrame);
+        //добавление прямоугольников в массив
         for(int i=0;i<6;i++){Dino.addFrame(new Rect(i*dino_w,0,i*dino_w+dino_w,dino_bitmap.getHeight()));}
-
 
         for(int i=0;i<2;i++){
             trees[i]=new ChristmasTreeSprite(tree_bitmap,random.nextInt(viewWidth/2)+viewWidth*(2+(i)),viewHeight - viewHeight / 3-viewHeight/5,this.speed,viewWidth);
