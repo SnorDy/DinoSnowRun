@@ -23,8 +23,7 @@ public class DinoSprite {
     private int currentFrame;
     private double timeForCurrentFrame;
     private double frameTime;
-    private Rect EndFrame;
-    private int jump_speed,down_speed;
+    private int jump_speed;
     private Paint p = new Paint();
 
     public DinoSprite(Bitmap b, int x, int y, Rect initialFrame){
@@ -32,17 +31,17 @@ public class DinoSprite {
         this.x=x;
         this.jump_speed=60;
         y=y-20;
-        this.down_speed = jump_speed-10;
+
         this.y=y-(y%jump_speed);
         this.start_y=this.y;
 
-        this.jump_y=y/4-(y/4%jump_speed)-jump_speed;
+        this.jump_y=y/12-(y/12%jump_speed)-jump_speed;
 
         this.frames = new ArrayList<Rect>();
         this.frames.add(initialFrame);
 
         this.timeForCurrentFrame = 0.0;
-        this.frameTime = 12;
+        this.frameTime = 0.1;
         this.currentFrame = 0;
         this.frameWidth = initialFrame.width();
         this.frameHeight = initialFrame.height();
@@ -66,23 +65,6 @@ public class DinoSprite {
         this.up = up;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-    public int getX() {
-        return this.x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-    public int getY() {
-        return this.y;
-    }
 
     public boolean isAlive() {
         return isAlive;
@@ -92,38 +74,14 @@ public class DinoSprite {
         isAlive = alive;
     }
 
-    public void setY(int y) {
-        this.y = y;
-    }
-    public int getCurrentFrame() {
-        return currentFrame;
-    }
-    public void setCurrentFrame(int currentFrame) {
-        this.currentFrame = currentFrame%frames.size();
-    }
-    public double getFrameTime() {
-        return frameTime;
-    }
-    public void setFrameTime(double frameTime) {
-        this.frameTime = Math.abs(frameTime);
-    }
-    public double getTimeForCurrentFrame() {
-        return timeForCurrentFrame;
-    }
-    public void setTimeForCurrentFrame(double timeForCurrentFrame) {
-        this.timeForCurrentFrame = Math.abs(timeForCurrentFrame);
-    }
-    public int getFramesCount () {
-        return frames.size();
-    }
+
     public void addFrame (Rect frame) {
         frames.add(frame);
     }
 
 
     public void update(int ms){
-        timeForCurrentFrame += ms+100;
-        if (!isAlive()){currentFrame=frames.size()-1;}
+        timeForCurrentFrame += ms;
 
         //реализация прыжка
         if ((IsUp())&&(this.y!=this.jump_y))this.y-=jump_speed;
@@ -139,14 +97,18 @@ public class DinoSprite {
 
 
     }
-    public boolean intersect(ChristmasTreeSprite s){
+    public boolean intersect(ChristmasTreeSprite s){//проврека на столкновения с елкой
 
-        if (getBoundingBoxRect().intersect(s.getBoundingBoxRect())) {setAlive(false); return true;}
+        if (getBoundingBoxRect().intersect(s.getBoundingBoxRect())) {setAlive(false);
+            currentFrame=frames.size()-1;
+
+
+            Log.d("DINNO",  "X dino"+x+" y dino" +y+ "s X "+s.getX()+" S y"+ s.getY()); return true;}
 
         return false;
     }
     public Rect getBoundingBoxRect(){
-        return new Rect(this.x,this.y,this.x+bitmap.getWidth(),this.y+bitmap.getHeight());
+        return new Rect(this.x,this.y,this.x+frameWidth,this.y+frameHeight);
     }
     public void draw (Canvas canvas) {
 

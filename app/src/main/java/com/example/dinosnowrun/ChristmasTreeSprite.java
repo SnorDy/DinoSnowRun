@@ -15,9 +15,6 @@ public class ChristmasTreeSprite {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
-    }
 
     private boolean isActive=true;
     Paint paint = new Paint();
@@ -30,13 +27,7 @@ public class ChristmasTreeSprite {
         this.viewWidth=viewW;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
 
     public void update() {
 
@@ -52,4 +43,16 @@ public class ChristmasTreeSprite {
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, paint);
     }
+
+    public int getY() {
+        return y;
+    }
+
+
+
+    public int getX() {
+        return x;
+    }
+
+
 }
